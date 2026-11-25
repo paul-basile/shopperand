@@ -55,7 +55,7 @@ app.post('/api/products', async (req, res) => {
     /* data contents to be inputted */
   const { name, description, price, stock_quantity, category, image_url } = req.body;
 
-  // Validate required fields and the check constraint
+  /* checks for required fields */
   if (!name || typeof name !== 'string') {
     return res.status(400).json({ error: 'name is required' });
   }
@@ -111,6 +111,7 @@ app.delete('/api/products/:id', async (req, res) => {
   res.status(204).send();
 });
 
+/* server run message */
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
