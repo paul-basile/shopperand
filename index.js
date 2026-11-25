@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import { supabase } from './supabase.js';
+import { requireApiKey } from './auth.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -51,7 +52,7 @@ app.get('/api/products/:id', async (req, res) => {
 });
 
 // POST /api/products
-app.post('/api/products', async (req, res) => {
+app.post('/api/products', requireApiKey, async (req, res) => {
     /* data contents to be inputted */
   const { name, description, price, stock_quantity, category, image_url } = req.body;
 
@@ -79,7 +80,7 @@ app.post('/api/products', async (req, res) => {
 });
 
 /* PATCH allows for fields to be edited */
-app.patch('/api/products/:id', async (req, res) => {
+app.patch('/api/products/:id', requireApiKey, async (req, res) => {
   const allowed = ['name', 'description', 'price', 'stock_quantity', 'category', 'image_url', 'is_active'];
   const updates = Object.fromEntries(
     Object.entries(req.body).filter(([key]) => allowed.includes(key))
@@ -101,7 +102,7 @@ app.patch('/api/products/:id', async (req, res) => {
 });
 
 /* the DELETE route just updates the is_active field to false */
-app.delete('/api/products/:id', async (req, res) => {
+app.delete('/api/products/:id', requireApiKey, async (req, res) => {
   const { error } = await supabase
     .from('products')
     .update({ is_active: false })
@@ -115,3 +116,5 @@ app.delete('/api/products/:id', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
+
+export default app;
